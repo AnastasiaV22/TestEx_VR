@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CraneController : MonoBehaviour
 {
@@ -31,15 +32,25 @@ public class CraneController : MonoBehaviour
     private bool isMovingEast = false;
     private bool isMovingWest = false;
 
+    public UnityEvent<CraneActionType> ObjectStartMoving;
+    public UnityEvent<CraneActionType> ObjectEndMoving;
+
+    SoundsController _SoundsController;
 
     private void Start()
     {
+        _SoundsController = SoundsController.GetInstance();
+
         CraneButtonEvent[] buttonEvents = FindObjectsOfType<CraneButtonEvent>();
 
         foreach (var buttonEvent in buttonEvents)
         {
             buttonEvent.OnCraneAction.AddListener(ChangeCraneActionState);
         }
+
+        ObjectStartMoving.AddListener(_SoundsController.PlaySound); //вызов звука начала
+        ObjectEndMoving.AddListener(_SoundsController.StopSound); // остановка звука
+
     }
 
     private void Update()
@@ -49,34 +60,85 @@ public class CraneController : MonoBehaviour
 
     private void ChangeCraneActionState(CraneActionType actionType, bool isActive)
     {
-        switch (actionType) 
+        switch (actionType)
         {
             case CraneActionType.MovementUp:
-                isMovingUp = isActive; 
+                isMovingUp = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
             
             case CraneActionType.MovementDown:
                 isMovingDown = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
 
             case CraneActionType.MovementEast:
                 isMovingEast = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
 
             case CraneActionType.MovementWest:
                 isMovingWest = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
 
             case CraneActionType.MovementNorth:
                 isMovingNorth = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
 
             case CraneActionType.MovementSouth:
                 isMovingSouth = isActive;
+                if (isActive)
+                {
+                    ObjectStartMoving.Invoke(actionType);
+                }
+                else
+                {
+                    ObjectEndMoving.Invoke(actionType);
+                }
                 break;
             
         }
     }
+
+
+
 
     private void CraneMoving()
     {
@@ -87,7 +149,7 @@ public class CraneController : MonoBehaviour
             if (newPosition.y >= maxHeight)
             {
                 newPosition.y = maxHeight;
-                isMovingUp = false;
+                ChangeCraneActionState(CraneActionType.MovementUp, false);
             }
 
             hook.localPosition = newPosition;
@@ -99,7 +161,7 @@ public class CraneController : MonoBehaviour
             if (newPosition.y <= minHeight)
             {
                 newPosition.y = minHeight;
-                isMovingDown = false;
+                ChangeCraneActionState(CraneActionType.MovementDown, false);
             }
 
             hook.localPosition = newPosition;
@@ -112,7 +174,7 @@ public class CraneController : MonoBehaviour
             if (newPosition.x >= maxCraneDistance)
             {
                 newPosition.x = maxCraneDistance;
-                isMovingEast = false;
+                ChangeCraneActionState(CraneActionType.MovementEast, false);
             }
 
             Crane.localPosition = newPosition;
@@ -124,7 +186,7 @@ public class CraneController : MonoBehaviour
             if (newPosition.x <= minCraneDistance)
             {
                 newPosition.x = minCraneDistance;
-                isMovingWest = false;
+                ChangeCraneActionState(CraneActionType.MovementWest, false);
             }
 
             Crane.localPosition = newPosition;
@@ -137,7 +199,7 @@ public class CraneController : MonoBehaviour
             if (newPosition.z >= maxBeamDistance)
             {
                 newPosition.z = maxBeamDistance;
-                isMovingNorth = false;
+                ChangeCraneActionState(CraneActionType.MovementNorth, false);
             }
 
             beamHolder.localPosition = newPosition;
@@ -149,11 +211,13 @@ public class CraneController : MonoBehaviour
             if (newPosition.z <= minBeamDistance)
             {
                 newPosition.z = minBeamDistance;
-                isMovingSouth = false;
+                ChangeCraneActionState(CraneActionType.MovementSouth, false);
             }
 
             beamHolder.localPosition = newPosition;
         }
     }
+
+
 
 }
