@@ -5,9 +5,11 @@ using UnityEngine.Events;
 
 public class CraneController : MonoBehaviour
 {
-    [SerializeField] public Transform beamHolder; // мост 
+    [SerializeField] public Transform beamHolder; // Мост 
     [SerializeField] public Transform Crane; // Кран
-    [SerializeField] public Transform hook; //крюк с катушкой
+    [SerializeField] public Transform hook; // Крюк 
+
+    [SerializeField] public Transform spool; // Катушка
 
     [SerializeField, Range(1, 3)] public float LiftSpeed = 1.0f;
     [SerializeField, Range(1, 3)] public float ForwardSpeed = 1.0f;
@@ -45,10 +47,10 @@ public class CraneController : MonoBehaviour
 
         foreach (var buttonEvent in buttonEvents)
         {
-            buttonEvent.OnCraneAction.AddListener(ChangeCraneActionState);
+            buttonEvent.OnCraneAction.AddListener(ChangeCraneActionState); // Нажатия кнопок пульта
         }
 
-        ObjectStartMoving.AddListener(_SoundsController.PlaySound); //вызов звука начала
+        ObjectStartMoving.AddListener(_SoundsController.PlaySound); // вызов звука начала
         ObjectEndMoving.AddListener(_SoundsController.StopSound); // остановка звука
 
     }
@@ -64,76 +66,37 @@ public class CraneController : MonoBehaviour
         {
             case CraneActionType.MovementUp:
                 isMovingUp = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
             
             case CraneActionType.MovementDown:
                 isMovingDown = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
 
             case CraneActionType.MovementEast:
                 isMovingEast = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
 
             case CraneActionType.MovementWest:
                 isMovingWest = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
 
             case CraneActionType.MovementNorth:
                 isMovingNorth = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
 
             case CraneActionType.MovementSouth:
                 isMovingSouth = isActive;
-                if (isActive)
-                {
-                    ObjectStartMoving.Invoke(actionType);
-                }
-                else
-                {
-                    ObjectEndMoving.Invoke(actionType);
-                }
                 break;
             
+        }
+
+        if (isActive)
+        {
+            ObjectStartMoving.Invoke(actionType);
+        }
+        else
+        {
+            ObjectEndMoving.Invoke(actionType);
         }
     }
 
@@ -145,6 +108,7 @@ public class CraneController : MonoBehaviour
         if (isMovingUp)
         {
             Vector3 newPosition = hook.localPosition + Vector3.up * LiftSpeed * Time.deltaTime;
+            spool.transform.Rotate(Vector3.right * 360 * LiftSpeed * Time.deltaTime);
 
             if (newPosition.y >= maxHeight)
             {
@@ -157,6 +121,7 @@ public class CraneController : MonoBehaviour
         if (isMovingDown)
         {
             Vector3 newPosition = hook.localPosition + Vector3.down * LiftSpeed * Time.deltaTime;
+            spool.transform.Rotate(Vector3.left * 360 * LiftSpeed * Time.deltaTime);
 
             if (newPosition.y <= minHeight)
             {

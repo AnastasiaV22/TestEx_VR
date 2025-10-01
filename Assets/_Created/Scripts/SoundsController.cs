@@ -28,6 +28,7 @@ public class SoundsController : MonoBehaviour
     [SerializeField] AudioClip movingBeamholderSound;
     [SerializeField] AudioClip movingCraneSound;
 
+    [SerializeField, Range(0,1)] float volume = 0.5f;
 
     private void Start()
     {
@@ -43,6 +44,7 @@ public class SoundsController : MonoBehaviour
         audioSource.clip = audioClip;
         audioSource.loop = true;
         audioSource.playOnAwake = false;
+        audioSource.volume = volume;
     }
 
     public void PlaySound(CraneActionType actionType)

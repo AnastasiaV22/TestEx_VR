@@ -22,7 +22,7 @@ public class CraneButtonEvent : MonoBehaviour
     private bool isPressed = false;
     
     public ControllerButton activationButton;
-    public Transform buttonObject; // объект кнопки
+    public Transform buttonObject;
     private Vector3 defaultPosition;
 
     public HandRole handRole;
@@ -35,8 +35,6 @@ public class CraneButtonEvent : MonoBehaviour
     {
         defaultPosition = buttonObject.localPosition;
     }
-
-
 
     private void Update()
     {
@@ -63,6 +61,22 @@ public class CraneButtonEvent : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Hands"))
+        {
+            isTouched = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Hands"))
+        {
+            isTouched = false;
+        }
+    }
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Hands"))
@@ -78,5 +92,5 @@ public class CraneButtonEvent : MonoBehaviour
         }
     }
 
-
+    */
 }
